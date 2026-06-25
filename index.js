@@ -10,24 +10,27 @@ function cleanName(name) {
     return name.split("(")[0].trim();
 }
 
-randomBtn.addEventListener("click", function () {
-    let sum = Number(limit.value)
+const isNameBanned = (name) => {
+    let isBanned = false;
+    bannedNames.forEach(bannedName => {
+        if (name.toLowerCase() === bannedName.toLowerCase()) {
+            isBanned = true
+        }
+    })
+    return isBanned;
+}
 
-
-    const pastedRows = randomName.value.split(/[,\n]+/)
+const pastedNames = (str, sum) => {
+    const pastedRows = str.split(/[,\n]+/)
     pastedRows.forEach(row => {
         const name = cleanName(row.trim());
         if (name === "") return
-        let isBanned = false;
 
-        bannedNames.forEach(bannedName => {
-            if (name.toLowerCase() === bannedName.toLowerCase()) {
-                isBanned = true
-            }
-        })
-        if (isBanned) {
+
+        if (isNameBanned(name)) {
             results.innerHTML = `Please remove ${name}`
-            const index = names.findIndex(n => n.toLowerCase() === name.toLowerCase())
+
+            const index = names.findIndex(user => user.toLowerCase() === name.toLowerCase())
             if (index !== -1) {
                 names.splice(index, 1)
             }
@@ -38,6 +41,11 @@ randomBtn.addEventListener("click", function () {
         }
     })
 
+}
+
+randomBtn.addEventListener("click", function () {
+    let sum = Number(limit.value)
+    pastedNames(randomName.value, sum)
     results.innerHTML = names.join("<br> ")
     randomName.value = ""
     console.log(names)
