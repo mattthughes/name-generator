@@ -11,18 +11,34 @@ function cleanName(name) {
 }
 
 randomBtn.addEventListener("click", function () {
-    const name = randomName.value.trim();
     let sum = Number(limit.value)
-    if (bannedNames.includes(name) || bannedNames.includes(name)) {
-        results.innerHTML = `Please remove ${name}`
-    }
-    else if (names.length < sum) {
-        names.push(name)
-        results.innerHTML = names
-        randomName.value = ""
-    }
-    
-    console.log(names)
 
-    console.log(sum)
+
+    const pastedRows = randomName.value.split(/[,\n]+/)
+    pastedRows.forEach(row => {
+        const name = cleanName(row.trim());
+        if (name === "") return
+        let isBanned = false;
+
+        bannedNames.forEach(bannedName => {
+            if (name.toLowerCase() === bannedName.toLowerCase()) {
+                isBanned = true
+            }
+        })
+        if (isBanned) {
+            results.innerHTML = `Please remove ${name}`
+            const index = names.findIndex(n => n.toLowerCase() === name.toLowerCase())
+            if (index !== -1) {
+                names.splice(index, 1)
+            }
+        }
+        else if (names.length < sum) {
+            names.push(name)
+
+        }
+    })
+
+    results.innerHTML = names.join("<br> ")
+    randomName.value = ""
+    console.log(names)
 })
