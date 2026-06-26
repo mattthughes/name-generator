@@ -7,7 +7,8 @@ const bannedNames = ["Matt Hughes", "Darcey Padwick"]
 const results = document.getElementById("results")
 
 function cleanName(name) {
-    return name.split("(")[0].trim();
+    const match = name.match(/^[A-Za-z'-]+\s+[A-Za-z'-]+/);
+    return match ? match[0] : "";
 }
 
 const isNameBanned = (name) => {
@@ -27,6 +28,9 @@ const pastedNames = (str, sum) => {
     randomName.value = ""
     const pastedRows = str.split(/[,\n]+/)
     pastedRows.forEach(row => {
+        if (!/\[\d{1,2}:\d{2}\s*(AM|PM)\]/i.test(row)) {
+            return;
+        }
         const name = cleanName(row.trim());
         if (name === "") return
 
@@ -84,10 +88,10 @@ randomBtn.addEventListener("click", function () {
 
     if (finalWinners.length === 0) {
         results.innerHTML = `Please add some names`
-    } else  {
+    } else {
 
 
-        results.innerHTML = finalWinners
+        results.innerHTML = finalWinners.join("<br>")
         console.log(finalWinners)
     }
 
